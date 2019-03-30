@@ -477,13 +477,13 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             AbstractChannel.this.eventLoop = eventLoop;
             // Tony: 如果调用register方法的线程和EventLoop执行线程不是同一个线程，则以任务形式提交绑定操作
             if (eventLoop.inEventLoop()) {
-                register0(promise);// Tony: 实际就是调用这个方法
+                register0(promise);// Tony: 实际就是调用这个方法。需要以提交任务的方式执行
             } else {
                 try {
-                    eventLoop.execute(new Runnable() {
+                    eventLoop.execute(new Runnable() { //code eventLoop 的 excute 方法
                         @Override
                         public void run() {
-                            register0(promise);
+                            register0(promise);//最终，会执行到 register 方法
                         }
                     });
                 } catch (Throwable t) {
@@ -508,11 +508,11 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 doRegister();// Tony: NIOchannel中，将Channel和NioEventLoop里面的Selector进行绑定
                 neverRegistered = false;
                 registered = true;
-
+                //Tony：触发 Handler 方法
                 // Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the
                 // user may already fire events through the pipeline in the ChannelFutureListener.
                 pipeline.invokeHandlerAddedIfNeeded();
-
+                //初始化完成之后，应该会有 4 个handler，除了头和尾以外，在初始化过程中，还会把最初构造时候传进来的handler带上
                 safeSetSuccess(promise);
                 pipeline.fireChannelRegistered();// Tony: 传播通道完成注册的事件
                 // Only fire a channelActive if the channel has never been registered. This prevents firing

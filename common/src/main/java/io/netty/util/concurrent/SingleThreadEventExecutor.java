@@ -895,7 +895,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void doStartThread() {
         assert thread == null;
-        executor.execute(new Runnable() {// Tony: 这里的executor是初始化EventLoop的时候传进来的
+        executor.execute(new Runnable() {// Tony: 这里的executor是初始化EventLoop的时候传进来的。一开始是没有线程的。
             @Override
             public void run() {
                 thread = Thread.currentThread();
@@ -905,7 +905,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
                 boolean success = false;
                 updateLastExecutionTime();
-                try {// Tony: 创建线程开始执行run方法，所以，每个EventLoop都是执行run
+                try {// Tony: 创建线程开始执行run方法，所以，每个EventLoop都是执行run，run方法就是在轮询事件，执行任务队列里面的任务
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {

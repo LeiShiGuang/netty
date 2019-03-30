@@ -65,15 +65,15 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
      * @throws Exception    is thrown if an error occurs. In that case it will be handled by
      *                      {@link #exceptionCaught(ChannelHandlerContext, Throwable)} which will by default close
      *                      the {@link Channel}.
-     */
+     *coderRay: 初始化通道 */
     protected abstract void initChannel(C ch) throws Exception;
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //register 事件的时候，会执行这个方法
     public final void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         // Normally this method will never be called as handlerAdded(...) should call initChannel(...) and remove
-        // the handler.
-        if (initChannel(ctx)) {// Tony: 收到注册成功的事件，先执行initChannel(ctx)，在执行方法重载的initChannel(ch)
+        // the handler.// Tony: 如果 handlerAdded 方法被执行了， channelRegistered 这个方法理论上不会再被调用
+        if (initChannel(ctx)) {// Tony: 收到注册成功的事件，先执行initChannel(ctx)，在执行方法重载的initChannel(ch)。初始化完毕，这个Handler会被移除
             // we called initChannel(...) so we need to call now pipeline.fireChannelRegistered() to ensure we not
             // miss an event.
             ctx.pipeline().fireChannelRegistered();
@@ -99,7 +99,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
      */
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        if (ctx.channel().isRegistered()) {
+        if (ctx.channel().isRegistered()) { //Tony: 如果当前通道已经注册，则调用初始化方法
             // This should always be true with our current DefaultChannelPipeline implementation.
             // The good thing about calling initChannel(...) in handlerAdded(...) is that there will be no ordering
             // surprises if a ChannelInitializer will add another ChannelInitializer. This is as all handlers
@@ -129,7 +129,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
         try {
             ChannelPipeline pipeline = ctx.pipeline();
             if (pipeline.context(this) != null) {
-                pipeline.remove(this);
+                pipeline.remove(this);//动态删除
             }
         } finally {
             initMap.remove(ctx);

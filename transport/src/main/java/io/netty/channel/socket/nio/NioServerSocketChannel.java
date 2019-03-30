@@ -144,7 +144,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
 
         try {
             if (ch != null) {
-                buf.add(new NioSocketChannel(this, ch));
+                buf.add(new NioSocketChannel(this, ch)); //抓化成 Netty 的channel对象
                 return 1;
             }
         } catch (Throwable t) {

@@ -139,7 +139,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
 
     @Override
     void init(Channel channel) throws Exception {
-        final Map<ChannelOption<?>, Object> options = options0();
+        final Map<ChannelOption<?>, Object> options = options0();//端口的一些初始化
         synchronized (options) {
             setChannelOptions(channel, options, logger);
         }
@@ -165,8 +165,8 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         synchronized (childAttrs) {
             currentChildAttrs = childAttrs.entrySet().toArray(newAttrArray(0));
         }
-        // Tony: ChannelInitializer是一个特殊的handler，一般就是在registered之后，执行一次，然后销毁。用于初始化channel
-        p.addLast(new ChannelInitializer<Channel>() {
+        //Tony: ChannelInitializer是一个特殊的handler，一般就是在registered之后，执行一次，然后销毁。用于初始化channel
+        p.addLast(new ChannelInitializer<Channel>() {//codeRay: 看 p 的变量，现在只有头和尾，增加handler，也是加在头和尾的中间
             @Override// Tony: 触发ChannelInitializer时，收到注册成功的事件后，就会执行initChannel方法
             public void initChannel(final Channel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
