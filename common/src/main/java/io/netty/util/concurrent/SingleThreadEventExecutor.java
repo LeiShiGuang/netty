@@ -897,7 +897,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         assert thread == null;
         executor.execute(new Runnable() {// Tony: 这里的executor是初始化EventLoop的时候传进来的。一开始是没有线程的。
             @Override
-            public void run() {
+            public void run() { //这里的 executor 是初始化 EventLoop 的时候传进来的
                 thread = Thread.currentThread();
                 if (interrupted) {
                     thread.interrupt();

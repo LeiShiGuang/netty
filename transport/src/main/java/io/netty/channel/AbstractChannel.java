@@ -479,7 +479,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             if (eventLoop.inEventLoop()) {
                 register0(promise);// Tony: 实际就是调用这个方法。需要以提交任务的方式执行
             } else {
-                try {
+                try { //一旦触发任务提交，就会启动 EventLoop 中的线程
                     eventLoop.execute(new Runnable() { //code eventLoop 的 excute 方法
                         @Override
                         public void run() {

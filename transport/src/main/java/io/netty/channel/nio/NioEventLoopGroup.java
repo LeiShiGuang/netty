@@ -121,7 +121,7 @@ public class NioEventLoopGroup extends MultithreadEventLoopGroup {
         }
     }
 
-    @Override
+    @Override //不断创建新的NioEventLoop，其中的 executor 是为了帮助我们创建线程，本身 NioEventLoop 是没有线程的
     protected EventLoop newChild(Executor executor, Object... args) throws Exception {
         return new NioEventLoop(this, executor, (SelectorProvider) args[0],
             ((SelectStrategyFactory) args[1]).newSelectStrategy(), (RejectedExecutionHandler) args[2]);

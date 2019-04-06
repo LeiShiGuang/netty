@@ -50,7 +50,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * {@link SingleThreadEventLoop} implementation which register the {@link Channel}'s to a
  * {@link Selector} and so does the multi-plexing of these in the event loop.
- *
+ *  将通道注册到 EventLoop 的selector 上，进行事件轮询，本质上就是 selector
  */
 public final class NioEventLoop extends SingleThreadEventLoop {
 
@@ -461,7 +461,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                     try {// Tony: 处理事件
                         processSelectedKeys();
                     } finally {
-                        // Ensure we always run tasks.
+                        // Ensure we always run tasks.//执行任务队列中的方法
                         runAllTasks();
                     }
                 } else {
